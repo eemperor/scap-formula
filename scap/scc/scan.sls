@@ -25,6 +25,8 @@ create scc output directory:
 'uninstall all content before analyzing {{ pattern }}':
   cmd.run:
     - name: '"{{ scc.cmd }}" -ua -q'
+    - success_retcodes:
+      - 1
 
 'analyze {{ pattern }}':
   cmd.run:
@@ -36,5 +38,7 @@ create scc output directory:
         attempts: 5
         interval: 1
         splay: 3
+    - success_retcodes:
+      - 1
 
 {%- endfor %}
