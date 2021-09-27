@@ -1,5 +1,7 @@
 {%- from tpldir ~ '/map.jinja' import scc with context %}
 
+{%- set os_family = salt.grains.get('os_family') %}
+
 include:
   - scap.scc
   - scap.content
@@ -25,6 +27,9 @@ create scc output directory:
 'uninstall all content before analyzing {{ pattern }}':
   cmd.run:
     - name: '"{{ scc.cmd }}" -ua -q'
+{%- if os_family == 'Windows' %}
+    - runas: 'Administrator'
+{%- endif %}
 
 'analyze {{ pattern }}':
   cmd.run:
@@ -36,5 +41,8 @@ create scc output directory:
         attempts: 5
         interval: 1
         splay: 3
+{%- if os_family == 'Windows' %}
+    - runas: 'Administrator'
+{%- endif %}
 
 {%- endfor %}
